@@ -18,9 +18,9 @@ export const EMOTION_COLORS: Record<string, string> = {
   Mixed: "#005F5A", // green
   Frightened: "#497D00", // yellow 
   Angry: "#A65F00", // amber
-  Negative: "#9F0712", // red
-  Romantic: "#A3004C", // pink
-  All: "#262626", // neutral
+  Negative: "#B0270B", // red
+  Romantic: "#861043", // pink
+  All: "#9E0D6A", // neutral
 }
 
 export const PARTS_OF_SPEECH_EXPANSIONS: Record<string, string> = {
