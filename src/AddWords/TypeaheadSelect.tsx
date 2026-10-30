@@ -34,7 +34,7 @@ export default function TypeaheadSelect({ value, options, onChange, onSubmit, on
     : options.filter((option) => {
       const query = draft.trim().toLowerCase()
       if (!query) return true
-      return option.toLowerCase().startsWith(query) || option.toLowerCase().includes(query)
+      return option.toLowerCase().startsWith(query)
     })
 
   useLayoutEffect(() => {

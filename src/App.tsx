@@ -16,7 +16,7 @@ export default function App() {
   return (
     <div className="bg-neutral-100 text-neutral-950 fixed inset-0 overflow-hidden flex flex-col">
       <div className="flex items-center bg-cyan-950 text-white p-3">
-        <h2 className="slabo text-3xl">Word Collector</h2>
+        <h2 className="slabo text-3xl">Word Collection</h2>
         <div className="ms-auto flex gap-2">
           <Export words={words} importWords={importWords}/>
           <AddWords words={words} addWords={addWords} />
