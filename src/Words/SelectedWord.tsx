@@ -9,9 +9,10 @@ type Props = {
     word: Word
     setSelectedWord: (word: string | null) => void
     updateWord: (wordId: string, field: keyof Word, value: string) => Promise<void>
+    deleteWord: (wordId: string) => Promise<void>
 }
 
-export default function SelectedWord({ word, setSelectedWord, updateWord }: Props) {
+export default function SelectedWord({ word, setSelectedWord, updateWord, deleteWord }: Props) {
     const [isEditing, setIsEditing] = useState(false)
     const [wordValue, setWordValue] = useState(capitalizeFirst(word.word))
     const inputRef = useRef<HTMLInputElement>(null)
@@ -44,7 +45,7 @@ export default function SelectedWord({ word, setSelectedWord, updateWord }: Prop
                             ref={inputRef}
                             className="font-bold text-xl bg-white border border-neutral-400 rounded px-2 py-1 outline-none"
                             value={wordValue}
-                            aria-label="Word id"
+                            aria-label="Word"
                             onChange={(event) => setWordValue(event.target.value)}
                             onKeyDown={(event) => {
                                 if (event.key === "Enter") void saveWord()
@@ -68,7 +69,7 @@ export default function SelectedWord({ word, setSelectedWord, updateWord }: Prop
                         <button
                             type="button"
                             className="text-neutral-500 p-2"
-                            aria-label="Edit word name"
+                            aria-label="Edit"
                             onClick={() => {
                                 setWordValue(capitalizeFirst(word.word))
                                 setIsEditing(true)
@@ -107,7 +108,14 @@ export default function SelectedWord({ word, setSelectedWord, updateWord }: Prop
                         ))}
                     </select>
                 </div>
-                <button className="ms-auto text-neutral-600 hover:text-red-700" aria-label="trash"><FontAwesomeIcon icon={faTrash} /></button>
+                <button
+                    className="ms-auto text-neutral-600 hover:text-red-700"
+                    aria-label="Delete word"
+                    onClick={() => {
+                        void deleteWord(word.id)
+                        setSelectedWord(null)
+                    }}
+                ><FontAwesomeIcon icon={faTrash} /></button>
             </div>
         </div>
     )

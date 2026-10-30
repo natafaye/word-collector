@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { Word } from "./shared/types";
-import { collection, doc, getDocs, updateDoc, writeBatch } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDocs, updateDoc, writeBatch } from "firebase/firestore";
 import { db } from "./shared/firebase";
 
 export const useWords = () => {
@@ -40,5 +40,10 @@ export const useWords = () => {
     await fetchWords();
   }
 
-  return { words, addWords, updateWord }
+  async function deleteWord(wordId: string) {
+    setWords((current) => current.filter((word) => word.id !== wordId))
+    await deleteDoc(doc(db, "words", wordId))
+  }
+
+  return { words, addWords, updateWord, deleteWord }
 };

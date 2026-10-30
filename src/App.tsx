@@ -7,9 +7,9 @@ import AddWords from "./AddWords/AddWords";
 import SelectedWord from "./Words/SelectedWord";
 
 export default function App() {
-  const [filters, setFilters] = useState<FilterSettings>({ type: "All", emotion: "All", partOfSpeech: "All" });
+  const [filters, setFilters] = useState<FilterSettings>({ type: "All", emotion: "All", query: "" });
   const onFilterChange = (changed: Partial<FilterSettings>) => setFilters({ ...filters, ...changed });
-  const { words, addWords, updateWord } = useWords();
+  const { words, addWords, updateWord, deleteWord } = useWords();
   const [selectedWord, setSelectedWord] = useState<string | null>(null);
 
   return (
@@ -18,18 +18,19 @@ export default function App() {
         <h2 className="slabo text-3xl">Word Collector</h2>
         <AddWords words={words} addWords={addWords} />
       </div>
-      <div className="grow p-4">
+      <div className="p-4 pb-1">
         <Filters filters={filters} onChange={onFilterChange} />
-        <div>
-          <Words words={words} filters={filters} setSelectedWord={setSelectedWord} />
-        </div>
       </div>
-      { selectedWord && (
+      <div className="grow px-4 pt-2 overflow-y-scroll">
+        <Words words={words} filters={filters} setSelectedWord={setSelectedWord} />
+      </div>
+      {selectedWord && (
         <SelectedWord
           word={words.find(w => w.id === selectedWord)!}
           setSelectedWord={setSelectedWord}
           updateWord={updateWord}
-        /> 
+          deleteWord={deleteWord}
+        />
       )}
     </div>
   )

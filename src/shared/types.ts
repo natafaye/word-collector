@@ -9,5 +9,6 @@ export type Word = {
 export type FilterSettings = {
     type: string;
     emotion: string;
-    partOfSpeech: string;
+    query: string;
+    // groupBy: keyof Word | "";
 }

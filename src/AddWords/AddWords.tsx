@@ -130,7 +130,7 @@ export default function AddWords({ words, addWords }: Props) {
 							<tr>
 								<th className="text-start font-normal ps-3 py-2 pb-1">Word</th>
 								<th className="text-start font-normal ps-3 py-2 pb-1 w-24 lg:w-28">Emotion</th>
-								<th className="text-start font-normal ps-3 py-2 pb-1 w-24 lg:w-28">Type</th>
+								<th className="text-start font-normal ps-3 py-2 pb-1 w-28 lg:w-28">Type</th>
 								{/* <th className="text-start font-normal ps-2 py-2 pb-1 w-12">PoS</th> */}
 							</tr>
 						</thead>
