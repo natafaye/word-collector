@@ -14,7 +14,13 @@ export default function Words({ words, filters, setSelectedWord }: Props) {
     (filters.emotion === "All" || filters.emotion === "Group" || word.emotion === filters.emotion) &&
     (filters.type === "All" || filters.type === "Group" || word.type === filters.type) &&
     (filters.query === "" || word.word.includes(normalizeWord(filters.query)))
-  ).toSorted((a, b) => EMOTIONS.indexOf(a.emotion) - EMOTIONS.indexOf(b.emotion))
+  ).toSorted((a, b) => {
+    const emotionDifference = EMOTIONS.indexOf(a.emotion) - EMOTIONS.indexOf(b.emotion)
+    if(emotionDifference) return emotionDifference
+    const typeDifference = TYPES.indexOf(a.type) - TYPES.indexOf(b.type)
+    if(typeDifference) return typeDifference
+    return a.word.localeCompare(b.word);
+  })
 
   const groupBy: keyof Word = filters.emotion === "Group" ? "emotion" : filters.type === "Group" ? "type" : "word"
   const groupNames = groupBy === "emotion" ? EMOTIONS : groupBy === "type" ? TYPES : [""]
