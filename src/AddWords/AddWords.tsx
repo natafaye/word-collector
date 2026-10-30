@@ -57,13 +57,13 @@ export default function AddWords({ words, addWords }: Props) {
 		}
 	}
 
-	const removeRow = (indexToRemove: number) => {
-		if (wordsToAdd.length === 1)
-			setWordsToAdd([getBlankWord()])
-		else
-			setWordsToAdd(wordsToAdd.filter((_, index) => index !== indexToRemove))
-		setPendingFocus({ index: Math.max(indexToRemove - 1, 0), field: "word" });
-	}
+	// const removeRow = (indexToRemove: number) => {
+	// 	if (wordsToAdd.length === 1)
+	// 		setWordsToAdd([getBlankWord()])
+	// 	else
+	// 		setWordsToAdd(wordsToAdd.filter((_, index) => index !== indexToRemove))
+	// 	setPendingFocus({ index: Math.max(indexToRemove - 1, 0), field: "word" });
+	// }
 
 	const updateWord = (indexToUpdate: number, field: keyof Word, value: string) => {
 		setWordsToAdd(wordsToAdd.map((word, index) =>
@@ -90,8 +90,8 @@ export default function AddWords({ words, addWords }: Props) {
 		const { key } = event
 		if (key === "Enter")
 			addRow(index);
-		else if (key === "Backspace" && !wordsToAdd[index].word.length)
-			removeRow(index);
+		// else if (key === "Backspace" && !wordsToAdd[index].word.length)
+		// 	removeRow(index);
 		else if (key === "ArrowUp") {
 			event.preventDefault()
 			moveFocus(index, "word", -1)
