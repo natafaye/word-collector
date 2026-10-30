@@ -1,5 +1,6 @@
 export type Word = {
     id: string;
+    word: string;
     emotion: string;
     type: string;
     partOfSpeech: string;

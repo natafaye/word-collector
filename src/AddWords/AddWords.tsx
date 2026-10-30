@@ -11,14 +11,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import ModalFooter from "../Modal/ModalFooter";
 import Button from "../Button";
+import { normalizeWord } from "../shared/utilities";
 
 type Props = {
 	words: Word[]
 	addWords: (wordsToAdd: Word[]) => void
 }
 
-const getBlankWord = () => ({ id: "", type: "", emotion: "", partOfSpeech: "V" })
-const normalizeWord = (word: string) => word.trim().toLowerCase()
+const getBlankWord = (): Word => ({ id: "", word: "", type: "", emotion: "", partOfSpeech: "V" })
 
 export default function AddWords({ words, addWords }: Props) {
 	const [showAddModal, setShowAddModal] = useState(false);
@@ -72,12 +72,12 @@ export default function AddWords({ words, addWords }: Props) {
 	}
 
 	// Duplicate checking
-	const enteredWordNames = wordsToAdd.map((word) => normalizeWord(word.id)).filter(word => word !== "")
-	const existingWordNames = new Set(words.map((word) => word.id))
+	const enteredWordNames = wordsToAdd.map((word) => normalizeWord(word.word)).filter(word => word !== "")
+	const existingWordNames = new Set(words.map((word) => normalizeWord(word.word)))
 	const duplicates = enteredWordNames.filter((word, index) =>
 		enteredWordNames.indexOf(word) !== index || existingWordNames.has(word)
 	)
-	const isDuplicate = (word: Word) => duplicates.includes(word.id);
+	const isDuplicate = (word: Word) => word.word !== "" && duplicates.includes(normalizeWord(word.word));
 
 	const moveFocus = (index: number, field: FocusField, direction: -1 | 1) => {
 		const targetIndex = direction === -1
@@ -90,7 +90,7 @@ export default function AddWords({ words, addWords }: Props) {
 		const { key } = event
 		if (key === "Enter")
 			addRow(index);
-		else if (key === "Backspace" && !wordsToAdd[index].id.length)
+		else if (key === "Backspace" && !wordsToAdd[index].word.length)
 			removeRow(index);
 		else if (key === "ArrowUp") {
 			event.preventDefault()
@@ -108,9 +108,9 @@ export default function AddWords({ words, addWords }: Props) {
 		const normalizedWords = wordsToAdd
 			.map((word) => ({
 				...word,
-				id: normalizeWord(word.id),
+				word: normalizeWord(word.word),
 			}))
-			.filter(word => word.id !== "")
+			.filter(word => word.word !== "")
 
 		addWords(normalizedWords);
 		setWordsToAdd([getBlankWord()])
@@ -146,10 +146,10 @@ export default function AddWords({ words, addWords }: Props) {
 												isDuplicate(word) ? "border-red-500 bg-red-100" : "border-transparent"
 											)}
 											type="text"
-											value={word.id}
+											value={word.word}
 											aria-invalid={isDuplicate(word)}
 											title={isDuplicate(word) ? "Duplicate word" : undefined}
-											onChange={(event) => updateWord(index, "id", event.target.value)}
+											onChange={(event) => updateWord(index, "word", event.target.value)}
 											onKeyUp={(e) => handleInputKeyUp(e, index)}
 										/>
 									</td>
@@ -171,6 +171,7 @@ export default function AddWords({ words, addWords }: Props) {
 											inputRef={(element) => { typeInputRefs.current[index] = element }}
 											onArrowUp={() => moveFocus(index, "type", -1)}
 											onArrowDown={() => moveFocus(index, "type", 1)}
+											onTab={index === wordsToAdd.length - 1 ? () => addRow(index) : undefined}
 										/>
 									</td>
 									{/* <td className="p-1 pe-2">

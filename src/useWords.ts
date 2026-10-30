@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { Word } from "./shared/types";
-import { collection, doc, getDocs, writeBatch } from "firebase/firestore";
+import { collection, doc, getDocs, updateDoc, writeBatch } from "firebase/firestore";
 import { db } from "./shared/firebase";
 
 export const useWords = () => {
@@ -9,7 +9,10 @@ export const useWords = () => {
   const fetchWords = async () => {
     const querySnapshot = await getDocs(collection(db, "words"));
     setWords(
-      querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }) as Word),
+      querySnapshot.docs.map((wordDoc) => {
+        const data = wordDoc.data()
+        return { id: wordDoc.id, ...data } as Word
+      }),
     );
   };
 
@@ -21,13 +24,21 @@ export const useWords = () => {
     const batch = writeBatch(db);
     const collectionRef = collection(db, "words");
     wordsToAdd.forEach((word) => {
-      const newDocRef = doc(collectionRef, word.id);
-      const { id, ...data } = word;
+      const newDocRef = doc(collectionRef);
+      const { id: _id, ...data } = word;
       batch.set(newDocRef, data);
     });
     await batch.commit();
     fetchWords();
   }
 
-  return { words, addWords }
+  async function updateWord(wordId: string, field: keyof Word, value: string) {
+    setWords((current) => current.map((word) =>
+      word.id === wordId ? { ...word, [field]: value } : word
+    ))
+    await updateDoc(doc(db, "words", wordId), { [field]: value });
+    await fetchWords();
+  }
+
+  return { words, addWords, updateWord }
 };
