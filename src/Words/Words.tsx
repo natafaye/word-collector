@@ -26,7 +26,7 @@ export default function Words({ words, filters, setSelectedWord }: Props) {
   return (
     <div>
       {groupedWords.map(group => (
-        <div className="not-last:border-b border-neutral-200 mb-5 pb-5">
+        <div key={group.name} className="not-last:border-b border-neutral-200 mb-5 pb-5">
           <div className="flex items-center mb-2 -mt-1">
             {group.name !== "" && <h3 className="text-xl text-neutral-600 mb-1.5">{group.name}</h3>}
             <div className="ms-auto text-xs text-neutral-400">{group.words.length} WORDS</div>

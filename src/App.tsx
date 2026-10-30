@@ -5,18 +5,22 @@ import type { FilterSettings } from "./shared/types";
 import { useWords } from "./useWords";
 import AddWords from "./AddWords/AddWords";
 import SelectedWord from "./Words/SelectedWord";
+import Export from "./Export/Export";
 
 export default function App() {
   const [filters, setFilters] = useState<FilterSettings>({ type: "All", emotion: "All", query: "" });
   const onFilterChange = (changed: Partial<FilterSettings>) => setFilters({ ...filters, ...changed });
-  const { words, addWords, updateWord, deleteWord } = useWords();
+  const { words, addWords, updateWord, deleteWord, importWords } = useWords();
   const [selectedWord, setSelectedWord] = useState<string | null>(null);
 
   return (
     <div className="bg-neutral-100 text-neutral-950 fixed inset-0 overflow-hidden flex flex-col">
-      <div className="flex justify-between items-center bg-cyan-950 text-white p-3">
+      <div className="flex items-center bg-cyan-950 text-white p-3">
         <h2 className="slabo text-3xl">Word Collector</h2>
-        <AddWords words={words} addWords={addWords} />
+        <div className="ms-auto flex gap-2">
+          <Export words={words} importWords={importWords}/>
+          <AddWords words={words} addWords={addWords} />
+        </div>
       </div>
       <div className="p-4 pb-1">
         <Filters filters={filters} onChange={onFilterChange} />

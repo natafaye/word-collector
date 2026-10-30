@@ -11,7 +11,7 @@ export const useWords = () => {
     setWords(
       querySnapshot.docs.map((wordDoc) => {
         const data = wordDoc.data()
-        return { id: wordDoc.id, ...data } as Word
+        return { ...data, id: wordDoc.id, word: data.word ?? wordDoc.id } as Word
       }),
     );
   };
@@ -45,5 +45,48 @@ export const useWords = () => {
     await deleteDoc(doc(db, "words", wordId))
   }
 
-  return { words, addWords, updateWord, deleteWord }
+  async function importWords(importedWords: Array<{ word: string, type: string, emotion: string }>) {
+    const batch = writeBatch(db)
+    const collectionRef = collection(db, "words")
+    const latestByWord = new Map<string, { word: string, type: string, emotion: string }>()
+
+    importedWords.forEach((importedWord) => {
+      const normalizedWord = importedWord.word.trim().toLowerCase()
+      if (normalizedWord) {
+        latestByWord.set(normalizedWord, {
+          word: importedWord.word.trim().toLowerCase(),
+          type: importedWord.type.trim(),
+          emotion: importedWord.emotion.trim(),
+        })
+      }
+    })
+
+    const existingByWord = new Map(
+      words.map((word) => [word.word, word])
+    )
+
+    latestByWord.forEach((importedWord, normalizedWord) => {
+      const existingWord = existingByWord.get(normalizedWord)
+      if (existingWord) {
+        if (existingWord.word !== importedWord.word || existingWord.type !== importedWord.type || existingWord.emotion !== importedWord.emotion) {
+          batch.update(doc(collectionRef, existingWord.id), {
+            word: importedWord.word,
+            type: importedWord.type,
+            emotion: importedWord.emotion,
+          })
+        }
+      } else {
+        batch.set(doc(collectionRef), {
+          word: importedWord.word,
+          type: importedWord.type,
+          emotion: importedWord.emotion,
+        })
+      }
+    })
+
+    await batch.commit()
+    await fetchWords()
+  }
+
+  return { words, addWords, updateWord, deleteWord, importWords }
 };
